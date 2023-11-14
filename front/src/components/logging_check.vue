@@ -1,35 +1,31 @@
 <script>
-let token;
-function test_logging(data, token) {
-  return new Promise(resolve, reject) => {
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Vous pouvez ajuster le type de contenu en fonction de vos besoins
-      },
-      body: JSON.stringify(donnees)
-    }
-    fetch(url, options)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`La requête a échoué avec le statut ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          token = data;
-          resolve(data);
-        })
-        .catch(error => {
-          reject(error);
-        });
-  });
-}
-  }
-}
+import axios from 'axios';
+
 export default {
-  name: "logging_check",
-}
+  data() {
+    return {
+      resultatRequete: null,
+    };
+  },
+  methods: {
+    async test_logging(email, password) {
+      try {
+        // Effectuer une requête POST avec axios
+        const response = await axios.post('http://localhost', {
+          // Données à envoyer avec la requête
+          email: email,
+          password: password
+        });
+        // Mettre à jour le résultat dans la variable de données
+        this.resultatRequete = response.data;
+      } catch (erreur) {
+        // Gérer les erreurs ici si nécessaire
+        console.log("erreur", erreur);
+      }
+    }
+  }
+};
+
 </script>
 
 <template>
