@@ -1,0 +1,2 @@
+GET http://localhost/api/categories?jwt=test
+Accept: application/json
