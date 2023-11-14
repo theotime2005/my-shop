@@ -1,2 +1,16 @@
-GET http://localhost/api/categories?jwt=test
+# Exemple de requêtes http
+
+### Get token
+POST http://localhost/authentication_token
+Content-Type: application/json
+
+{
+  "email": "admin@lesmeilleurs.com",
+  "password": "administration"
+}
+
+### Get users
+GET http://localhost/api/users
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2OTk5OTUxOTAsImV4cCI6MTY5OTk5ODc5MCwicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6ImFkbWluQGxlc21laWxsZXVycy5jb20ifQ.meFRTcmQurck5yI_UqgGaTSflrOQRRX_LweMMdgtSOWPTkjckZP0gfHbwUQ1SCiEIeNa5kzkgRUddwZgidx1lIQXEU4WBnSTMNz675ecHLifkT2QbdrvIxYCWfadKKFZFFhy84eK49k-rQYLHcH_LhzcXK9x3Rruez4Eu7GpOtE_eBfCoV9M9HpgePsabv_FHBab68lbzOo4DPlx1sEc11IyzK69JdMW_lj_iZjeuWSuVXyo8P8lBslhdHrKLHNcvNfqVOzI-6w1jBIJkhzqcUkU778Owmbk8Y0YejxVat5KNcpAEocXwvFFqlQ__fj1zOoeJVIoC_DRayz7Ll-FQQ
 Accept: application/json
+
