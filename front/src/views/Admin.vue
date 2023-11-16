@@ -42,7 +42,7 @@
           <p>{{ product.category }}</p>
           <p>{{ product.price }}</p>
           <div class="product-buttons">
-            <button class="edit-button" @click="editProduct(product)">Edit</button>
+            <button class="edit-button" @click="edit">Edit</button>
             <button class="delete-button" @click="deleteProduct(product.id)">Delete</button>
           </div>
         </div>
@@ -82,11 +82,6 @@ export default {
   },
   methods: {
 
-    editProduct(product) {
-      // Logique pour modifier le produit
-      console.log('Modifier le produit :', product);
-    },
-
     deleteProduct(productId) {
       // Logique pour supprimer le produit
       console.log('Supprimer le produit avec l\'ID :', productId);
@@ -112,7 +107,25 @@ export default {
       } else {
         console.error("Log out failed.");
       }
-    }
+    },
+    add() {
+      const isAddIn = true;
+
+      if (isAddIn) {
+        this.$router.push('/admin/add');
+      } else {
+        console.error("Add failed.");
+      }
+    },
+    edit() {
+      const isEditIn = true;
+
+      if (isEditIn) {
+        this.$router.push('/admin/edit');
+      } else {
+        console.error("Edit failed.");
+      }
+    },
   }
 }
 </script>
