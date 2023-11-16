@@ -11,11 +11,8 @@
           <h1>THE POIRE</h1>
         </div>
       </div>
-      <div class="add-container">
-        <button class="custom-button" @click="add">Add</button>
-      </div>
       <div class="login-container">
-        <button class="custom-button" @click="logout">Disconnect</button>
+        <button class="custom-button" @click="login">Login</button>
       </div>
     </header>
 
@@ -41,10 +38,6 @@
           <h3>{{ product.name }}</h3>
           <p>{{ product.category }}</p>
           <p>{{ product.price }}</p>
-          <div class="product-buttons">
-            <button class="edit-button" @click="editProduct(product)">Edit</button>
-            <button class="delete-button" @click="deleteProduct(product.id)">Delete</button>
-          </div>
         </div>
         <div v-if="filteredProducts.length === 0">No matching products found.</div>
       </div>
@@ -56,6 +49,11 @@
 export default {
   data() {
     return {
+      newProduct: {
+        name: '',
+        category: '',
+        price: '',
+      },
       isMenuVisible: false,
       searchQuery: '',
       selectedCategory: '',
@@ -81,17 +79,6 @@ export default {
     };
   },
   methods: {
-
-    editProduct(product) {
-      // Logique pour modifier le produit
-      console.log('Modifier le produit :', product);
-    },
-
-    deleteProduct(productId) {
-      // Logique pour supprimer le produit
-      console.log('Supprimer le produit avec l\'ID :', productId);
-    },
-
     toggleMenu() {
       this.isMenuVisible = !this.isMenuVisible;
     },
@@ -104,19 +91,20 @@ export default {
         return matchesQuery && matchesCategory && matchesPriceRange;
       });
     },
-    logout() {
+    login() {
+      // logique d'authentification ici
       const isLoggedIn = true;
-      localStorage.clear();
 
       if (isLoggedIn) {
-        this.$router.push('/');
+        this.$router.push('/log');
       } else {
-        console.error("Log out failed.");
+        console.error("Login failed.");
       }
     }
   }
 }
 </script>
+
 
 <style scoped>
 
@@ -131,12 +119,6 @@ export default {
 }
 
 .login-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.add-container {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
@@ -217,7 +199,7 @@ h2 {
 .custom-button {
   background-color: mediumseagreen;
   color: white;
-  border: 1px;
+  border: none;
   padding: 10px 20px;
   text-align: center;
   text-decoration: none;
@@ -235,33 +217,6 @@ h2 {
   background-color: forestgreen;
 }
 
-.edit-button {
-  background-color: #ff8c00; /* Orange */
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.edit-button:hover {
-  background-color: #e07b00;
-}
-
-.delete-button {
-  background-color: #ff0000;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.delete-button:hover {
-  background-color: #cc0000;
-}
 .custom-search-button {
   background-color: dimgray;
   color: white;
@@ -283,4 +238,3 @@ h2 {
   background-color: darkslategrey;
 }
 </style>
->>>>>>> origin/admin

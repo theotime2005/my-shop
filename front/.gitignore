@@ -21,9 +21,6 @@ coverage
 .vscode/*
 !.vscode/extensions.json
 .idea
-src/App.vue
-src/router/index.js
-src/views/AboutView.vue
 *.suo
 *.ntvs*
 *.njsproj
