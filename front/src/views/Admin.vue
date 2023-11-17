@@ -39,12 +39,13 @@
       <div class="products-container">
         <div class="product" v-for="product in filteredProducts" :key="product.id">
           <h3>{{ product.name }}</h3>
-          <p>{{ product.category }}</p>
+          <p>{{ product.description }}</p>
           <p>{{ product.price }}</p>
           <div class="product-buttons">
-            <button class="edit-button" @click="edit">Edit</button>
+            <button class="edit-button" @click="edit(product.id)">Edit</button>
             <button class="delete-button" @click="deleteProduct(product.id)">Delete</button>
           </div>
+          <p>Identifier: {{ products.id }}</p>
         </div>
         <div v-if="filteredProducts.length === 0">No matching products found.</div>
       </div>
@@ -56,6 +57,7 @@
 export default {
   data() {
     return {
+      burgerButtonText: "Ouvrir le menu",
       isMenuVisible: false,
       searchQuery: '',
       selectedCategory: '',
@@ -63,28 +65,35 @@ export default {
       username: '',
       password: '',
       categories: [
-        {id: 1, name: 'Category 1'},
-        {id: 2, name: 'Category 2'},
-        // Ajoute des categories
+        {id: 1, name: 'Catégorie 1'},
+        {id: 2, name: 'Catégorie 2'},
+        // Ajoute des catégories
       ],
       priceRanges: [
-        {id: 1, name: '$ 10,000 +'},
+        {id: 1, name: '10 000 $ et plus'},
         {id: 2, name: '99€'},
         // Ajoute des prix
       ],
-      products: [
-        {id: 1, name: 'Product 1', category: 'Category 1', price: '$50'},
-        {id: 2, name: 'Product 2', category: 'Category 2', price: '$30'},
-        // Ajoute des produits
-      ],
+      products: [],
       filteredProducts: [],
     };
   },
   methods: {
-
-    deleteProduct(productId) {
+    async deleteProduct(productId) {
       // Logique pour supprimer le produit
       console.log('Supprimer le produit avec l\'ID :', productId);
+      try {
+        const deleter = await fetch(`http://localhost/api/products/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
+          }
+        });
+        console.log("Produit supprimé");
+        window.location.reload();
+      } catch (error) {
+        console.error(error);
+      }
     },
 
     toggleMenu() {
@@ -101,12 +110,12 @@ export default {
     },
     logout() {
       const isLoggedIn = true;
-      localStorage.clear();
+      sessionStorage.clear();
 
       if (isLoggedIn) {
         this.$router.push('/');
       } else {
-        console.error("Log out failed.");
+        console.error("Déconnexion échouée.");
       }
     },
     add() {
@@ -115,21 +124,37 @@ export default {
       if (isAddIn) {
         this.$router.push('/admin/add');
       } else {
-        console.error("Add failed.");
+        console.error("Ajout échoué.");
       }
     },
-    edit() {
+    edit(id) {
       const isEditIn = true;
 
       if (isEditIn) {
-        this.$router.push('/admin/edit');
+        this.$router.push(`/admin/edit/${id}`);
       } else {
-        console.error("Edit failed.");
+        console.error("Édition échouée.");
       }
     },
-  }
+
+    async get_product_list() {
+      try {
+        const response = await fetch("http://localhost/api/products");
+        const products = await response.json();
+        this.products = products['hydra:member']; // Ligne corrigée
+        // Affiche la liste complète dès le chargement
+        this.filteredProducts = this.products;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  },
+  mounted() {
+    this.get_product_list();  // Appelle la méthode au montage du composant
+  },
 }
 </script>
+
 
 <style scoped>
 
@@ -296,4 +321,3 @@ h2 {
   background-color: darkslategrey;
 }
 </style>
->>>>>>> origin/admin

@@ -9,16 +9,18 @@
       </div>
     </header>
 
-
-    <h2>Ajouter un produit</h2>
+    <h2>Edit a product</h2>
     <div class="product-add">
-      <form @submit.prevent="addProduct">
+      <form @submit.prevent="editProduct">
 
-        <input class="custom-container-name" v-model="productName" type="text" placeholder="Name..." id="productName" required>
+        <label for="productName">Product name</label>
+        <input class="custom-container-name" v-model="productName" type="text" id="productName">
 
-        <input class="custom-container" v-model="productCategory" type="text" placeholder="Category..." id="productCategory" required>
+        <label for="productDescription">Product description</label>
+        <input class="custom-container" v-model="productDescription" type="text" id="productDescription" required>
 
-        <input class="custom-container" v-model="productPrice" type="text" placeholder="Price..." id="productPrice" required>
+        <label for="productPrice">Product price</label>
+        <input class="custom-container" v-model="productPrice" type="text" id="productPrice" required>
 
         <button class="custom-button-add" type="submit">Edit</button>
       </form>
@@ -28,6 +30,7 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import router from "@/router";
 
 export default {
   setup() {
@@ -48,40 +51,59 @@ export default {
   data() {
     return {
       productName: '',
-      productCategory: '',
+      productDescription: '',
       productPrice: '',
     };
   },
   methods: {
-    async addProduct() {
+    async getProductInformation(id) {
+      try {
+        const putRequest = await fetch(`http://localhost/api/products/${id}`);
+        const data = await putRequest.json();
+        this.productName = data.name;
+        this.productDescription = data.description;
+        this.productPrice = `${data.price}`;
+      } catch (error) {
+        console.error(error);
+        this.leave();
+      }
+    },
+
+    async editProduct() {
       try {
         const newProduct = {
           name: this.productName,
           category: this.productCategory,
-          price: this.productPrice,
+          price: parseInt(this.productPrice),
         };
 
-        // remplace l'URL par l'API réelle
-        const response = await fetch('https://api.example.com/products', {
-          method: 'POST',
+        // Remplacez l'URL par l'API réelle
+        const response = await fetch('http://localhost/api/products', {
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           },
           body: JSON.stringify(newProduct),
         });
 
         if (response.ok) {
-          console.log('Produit ajouté avec succès');
+          console.log('Produit modifié avec succès');
+          router.push('/admin');
         } else {
-          console.error('Échec de l\'ajout du produit');
+          console.error('Échec de la modification du produit');
         }
       } catch (error) {
         console.error('Une erreur s\'est produite', error);
       }
     },
   },
+  mounted() {
+    this.getProductInformation(this.$route.params.id);
+  },
 };
 </script>
+
 
 
 

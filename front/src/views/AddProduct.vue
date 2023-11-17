@@ -1,35 +1,11 @@
-<template>
-  <div class="content">
-    <header>
-      <div class="titre">
-        <h1>THE POIRE</h1>
-      </div>
-      <div class="leave-container">
-        <button class="custom-button" @click="leave">Leave</button>
-      </div>
-    </header>
-
-
-      <h2>Ajouter un produit</h2>
-    <div class="product-add">
-      <form @submit.prevent="addProduct">
-
-        <input class="custom-container-name" v-model="productName" type="text" placeholder="Name..." id="productName" required>
-
-        <input class="custom-container" v-model="productCategory" type="text" placeholder="Category..." id="productCategory" required>
-
-        <input class="custom-container" v-model="productPrice" type="text" placeholder="Price..." id="productPrice" required>
-
-        <button class="custom-button-add" type="submit">Add</button>
-      </form>
-    </div>
-  </div>
-</template>
-
 <script>
 import { useRouter } from 'vue-router';
+import FlashMessage from "@/components/FlashMessage.vue";
 
 export default {
+  components: {
+    FlashMessage,
+  },
   setup() {
     const router = useRouter();
 
@@ -48,32 +24,39 @@ export default {
   data() {
     return {
       productName: '',
-      productCategory: '',
+      productDescription: '',
       productPrice: '',
     };
   },
   methods: {
+    showFlashMessage(message, reload) {
+      this.$refs.flashMessage.displayFlash(message, reload);
+    },
     async addProduct() {
       try {
         const newProduct = {
           name: this.productName,
-          category: this.productCategory,
-          price: this.productPrice,
+          description: this.productDescription,
+          price: parseInt(this.productPrice),
+          categories: []
         };
 
         // remplace l'URL par l'API réelle
-        const response = await fetch('https://api.example.com/products', {
+        const response = await fetch('http://localhost/api/products', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           },
           body: JSON.stringify(newProduct),
         });
 
         if (response.ok) {
           console.log('Produit ajouté avec succès');
+          this.showFlashMessage("Product added", '/admin');
         } else {
           console.error('Échec de l\'ajout du produit');
+          this.showFlashMessage("Failed to add!");
         }
       } catch (error) {
         console.error('Une erreur s\'est produite', error);
@@ -83,7 +66,34 @@ export default {
 };
 </script>
 
+<template>
+  <div class="content">
+    <header>
+      <div class="titre">
+        <h1>THE POIRE</h1>
+      </div>
+      <div class="leave-container">
+        <button class="custom-button" @click="leave">Leave</button>
+      </div>
+    </header>
 
+
+      <h2>Ajouter un produit</h2>
+    <div class="product-add">
+      <form @submit.prevent="addProduct">
+
+        <input class="custom-container-name" v-model="productName" type="text" placeholder="Name..." id="productName" required>
+
+        <input class="custom-container" v-model="productDescription" type="text" placeholder="Description..." id="productDescription" required>
+
+        <input class="custom-container" v-model="productPrice" type="text" placeholder="Price..." id="productPrice" required>
+
+        <flash-message ref="flashMessage"></flash-message>
+        <button class="custom-button-add" type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 

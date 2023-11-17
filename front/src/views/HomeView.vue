@@ -2,7 +2,9 @@
   <div class="content">
     <header>
       <div class="site-info">
-        <div class="burger" @click="toggleMenu">
+        <!-- Utilisation d'une propriété distincte 'burgerButtonText' -->
+        <div class="burger">
+          <button type="button" @click="toggleMenu">{{ burgerButtonText }}</button>
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
@@ -36,7 +38,7 @@
       <div class="products-container">
         <div class="product" v-for="product in filteredProducts" :key="product.id">
           <h3>{{ product.name }}</h3>
-          <p>{{ product.category }}</p>
+          <p>{{ product.description }}</p>
           <p>{{ product.price }}</p>
         </div>
         <div v-if="filteredProducts.length === 0">No matching products found.</div>
@@ -46,47 +48,48 @@
 </template>
 
 <script>
+import { ref } from "vue";
+
 export default {
   data() {
     return {
+      burgerButtonText: "Open menu",
       newProduct: {
-        name: '',
-        category: '',
-        price: '',
+        name: "",
+        category: "",
+        price: "",
       },
       isMenuVisible: false,
-      searchQuery: '',
-      selectedCategory: '',
-      selectedPriceRange: '',
-      username: '',
-      password: '',
+      searchQuery: "",
+      selectedCategory: "",
+      selectedPriceRange: "",
+      username: "",
+      password: "",
       categories: [
-        {id: 1, name: 'Category 1'},
-        {id: 2, name: 'Category 2'},
+        { id: 1, name: "Category 1" },
+        { id: 2, name: "Category 2" },
         // Ajoute des categories
       ],
       priceRanges: [
-        {id: 1, name: '$ 10,000 +'},
-        {id: 2, name: '99€'},
+        { id: 1, name: "$ 10,000 +" },
+        { id: 2, name: "99€" },
         // Ajoute des prix
       ],
-      products: [
-        {id: 1, name: 'Product 1', category: 'Category 1', price: '$50'},
-        {id: 2, name: 'Product 2', category: 'Category 2', price: '$30'},
-        // Ajoute des produits
-      ],
+      products: [],
       filteredProducts: [],
     };
   },
   methods: {
     toggleMenu() {
       this.isMenuVisible = !this.isMenuVisible;
+      // Mettre à jour le texte du bouton burger manuellement
+      this.burgerButtonText = this.isMenuVisible ? "Close menu" : "Open menu";
     },
     searchProducts() {
-      this.filteredProducts = this.products.filter(product => {
+      this.filteredProducts = this.products.filter((product) => {
         const matchesQuery = product.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-        const matchesCategory = this.selectedCategory === '' || product.category === this.selectedCategory;
-        const matchesPriceRange = this.selectedPriceRange === '' || product.price === this.selectedPriceRange;
+        const matchesCategory = this.selectedCategory === "" || product.category === this.selectedCategory;
+        const matchesPriceRange = this.selectedPriceRange === "" || product.price === this.selectedPriceRange;
 
         return matchesQuery && matchesCategory && matchesPriceRange;
       });
@@ -96,14 +99,34 @@ export default {
       const isLoggedIn = true;
 
       if (isLoggedIn) {
-        this.$router.push('/log');
+        this.$router.push("/log");
       } else {
         console.error("Login failed.");
       }
+    },
+
+    async get_product_list() {
+      try {
+        const response = await fetch("http://localhost/api/products");
+        const products = await response.json();
+        console.log(products);
+        this.products = products['hydra:member'];
+        // Affiche la liste complète dès le chargement
+        this.filteredProducts = this.products;
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
-}
+  },
+  mounted() {
+    this.get_product_list();  // Appelle la méthode au montage du composant
+  },
+};
 </script>
+
+
+
+
 
 
 <style scoped>

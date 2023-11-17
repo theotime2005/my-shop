@@ -2,6 +2,11 @@
   <div id="app">
     <router-view />
   </div>
+  <hr>
+  <footer class="footer">
+    <p class="footer">© 2023 Théotime Berthod et Briac Dassier</p>
+    <p class="footer">Epitech Digital School Digi1, G1</p>
+  </footer>
 </template>
 
 
