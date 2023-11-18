@@ -1,38 +1,11 @@
-<template>
-  <div class="content">
-    <header>
-      <div class="titre">
-        <h1>THE POIRE</h1>
-      </div>
-      <div class="leave-container">
-        <button class="custom-button" @click="leave">Leave</button>
-      </div>
-    </header>
-
-    <h2>Edit a product</h2>
-    <div class="product-add">
-      <form @submit.prevent="editProduct">
-
-        <label for="productName">Product name</label>
-        <input class="custom-container-name" v-model="productName" type="text" id="productName">
-
-        <label for="productDescription">Product description</label>
-        <input class="custom-container" v-model="productDescription" type="text" id="productDescription" required>
-
-        <label for="productPrice">Product price</label>
-        <input class="custom-container" v-model="productPrice" type="text" id="productPrice" required>
-
-        <button class="custom-button-add" type="submit">Edit</button>
-      </form>
-    </div>
-  </div>
-</template>
-
 <script>
 import { useRouter } from 'vue-router';
-import router from "@/router";
+import FlashMessage from "@/components/FlashMessage.vue";
 
 export default {
+  components: {
+    FlashMessage,
+  },
   setup() {
     const router = useRouter();
 
@@ -40,7 +13,7 @@ export default {
       const isLeaveIn = true;
 
       if (isLeaveIn) {
-        router.push('/admin');
+        router.push('/admin/users');
       } else {
         console.error("Leave failed.");
       }
@@ -50,62 +23,72 @@ export default {
   },
   data() {
     return {
-      productName: '',
-      productDescription: '',
-      productPrice: '',
+      userName: '',
+      userEmail: '',
+      userPassword: '',
     };
   },
   methods: {
-    async getProductInformation(id) {
-      try {
-        const putRequest = await fetch(`http://localhost/api/products/${id}`);
-        const data = await putRequest.json();
-        this.productName = data.name;
-        this.productDescription = data.description;
-        this.productPrice = `${data.price}`;
-      } catch (error) {
-        console.error(error);
-        this.leave();
-      }
+    showFlashMessage(message, reload) {
+      this.$refs.flashMessage.displayFlash(message, reload);
     },
-
-    async editProduct() {
+    async addUser() {
       try {
-        const newProduct = {
-          name: this.productName,
-          category: this.productCategory,
-          price: parseInt(this.productPrice),
+        const newUser = {
+          fullName: this.userName,
+          email: this.userEmail,
+          password: this.userPassword,
         };
 
-        // Remplacez l'URL par l'API réelle
-        const response = await fetch('http://localhost/api/products', {
-          method: 'PUT',
+        // remplace l'URL par l'API réelle
+        const response = await fetch('http://localhost/api/users', {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           },
-          body: JSON.stringify(newProduct),
+          body: JSON.stringify(newUser),
         });
 
         if (response.ok) {
-          console.log('Produit modifié avec succès');
-          router.push('/admin');
+          console.log('Utilisateur ajouté avec succès');
+          this.showFlashMessage("User added", '/admin/users');
         } else {
-          console.error('Échec de la modification du produit');
+          console.error('Échec de l\'ajout de l\'utilisateur');
+          this.showFlashMessage("Failed to add!");
         }
       } catch (error) {
         console.error('Une erreur s\'est produite', error);
+        this.showFlashMessage("Failed to add!");
       }
     },
-  },
-  mounted() {
-    this.getProductInformation(this.$route.params.id);
   },
 };
 </script>
 
+<template>
+  <div class="content">
+    <header>
+      <div class="leave-container">
+        <button class="custom-button" @click="leave">Leave</button>
+      </div>
+    </header>
+      <h2>Add a user</h2>
+    <div class="user-add">
+      <form @submit.prevent="addUser">
 
+        <input class="custom-container-name" v-model="userName" type="text" placeholder="User name" id="userName" required>
 
+        <input class="custom-container" v-model="userEmail" type="email" id="userEmail" required>
+
+        <input class="custom-container" v-model="userPassword" type="password" id="userPassword" required>
+
+        <flash-message ref="flashMessage"></flash-message>
+        <button class="custom-button-add" type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 
@@ -141,7 +124,7 @@ export default {
 }
 
 .custom-button-add {
-  background-color: #ff8c00; /* Orange */
+  background-color: mediumseagreen;
   color: white;
   border: 1px;
   padding: 10px 20px;
@@ -155,11 +138,11 @@ export default {
 }
 
 .custom-button-add:hover {
-  background-color: #e07b00;
+  background-color: darkgreen;
 }
 
 .custom-button-add:active {
-  background-color: #e07b00;
+  background-color: forestgreen;
 }
 
 .leave-container {
@@ -222,7 +205,7 @@ header {
   background-color: darkslategrey;
 }
 
-.product-add {
+.product-edit {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -233,7 +216,7 @@ header {
   border-radius: 5px;
 }
 
-.product-add form {
+.user-add form {
   display: flex;
   flex-direction: column;
   align-items: center;

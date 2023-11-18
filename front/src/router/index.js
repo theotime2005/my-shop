@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import AdminView from '@/views/Admin.vue';
-import AddView from '@/views/AddProduct.vue';
-import EditView from '@/views/EditProduct.vue';
+import AddView from '@/views/products/AddProduct.vue';
+import EditView from '@/views/products/EditProduct.vue';
 
 
 const router = createRouter({
@@ -22,21 +22,46 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: AdminView,
+      children: [
+        {
+          path: 'products',
+          name: 'Products',
+          component: () => import("@/components/Products.vue"),
+        },
+        {
+          path: 'products/add',
+          name: 'Add product',
+          component: AddView,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'products/edit/:id',
+          name: 'edit product',
+          component: EditView,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'users',
+          name: 'Users',
+          component: () => import("@/components/Users.vue"),
+          meta: {requiresAuth: true},
+        },
+        {
+          path: 'users/add',
+          name: 'Add a user',
+          component: () => import("@/views/users/AddUser.vue"),
+          meta: {requiresAuth: true}
+        },
+        {
+          path: 'users/edit/:id',
+          name: 'Edit a user',
+          component: () => import("@/views/users/EditUser.vue"),
+          meta: {requiresAuth: true}
+        }
+      ],
       meta: { requiresAuth: true }
-    },
-    {
-      path: '/admin/add',
-      name: 'add',
-      component: AddView,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/admin/edit/:id',
-      name: 'edit',
-      component: EditView,
-      meta: { requiresAuth: true }
-    },
-  ]
+    }
+  ],
 })
 
 router.beforeEach((to, from, next) => {

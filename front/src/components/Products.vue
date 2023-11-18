@@ -2,19 +2,15 @@
   <div class="content">
     <header>
       <div class="site-info">
-        <!-- Utilisation d'une propriété distincte 'burgerButtonText' -->
         <div class="burger">
           <button type="button" @click="toggleMenu">{{ burgerButtonText }}</button>
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <div class="titre">
-          <h1>THE POIRE</h1>
-        </div>
       </div>
-      <div class="login-container">
-        <button class="custom-button" @click="login">Login</button>
+      <div class="add-container">
+        <button class="custom-button" @click="add">Add</button>
       </div>
     </header>
 
@@ -40,6 +36,11 @@
           <h3>{{ product.name }}</h3>
           <p>{{ product.description }}</p>
           <p>{{ product.price }}</p>
+          <div class="product-buttons">
+            <button class="edit-button" @click="edit(product.id)">Edit</button>
+            <button class="delete-button" @click="deleteProduct(product.id)">Delete</button>
+          </div>
+          <p>Identifier: {{ product.id }}</p>
         </div>
         <div v-if="filteredProducts.length === 0">No matching products found.</div>
       </div>
@@ -48,31 +49,24 @@
 </template>
 
 <script>
-import { ref } from "vue";
-
 export default {
   data() {
     return {
       burgerButtonText: "Open menu",
-      newProduct: {
-        name: "",
-        category: "",
-        price: "",
-      },
       isMenuVisible: false,
-      searchQuery: "",
-      selectedCategory: "",
-      selectedPriceRange: "",
-      username: "",
-      password: "",
+      searchQuery: '',
+      selectedCategory: '',
+      selectedPriceRange: '',
+      username: '',
+      password: '',
       categories: [
-        { id: 1, name: "Category 1" },
-        { id: 2, name: "Category 2" },
-        // Ajoute des categories
+        {id: 1, name: 'Catégorie 1'},
+        {id: 2, name: 'Catégorie 2'},
+        // Ajoute des catégories
       ],
       priceRanges: [
-        { id: 1, name: "$ 10,000 +" },
-        { id: 2, name: "99€" },
+        {id: 1, name: '10 000 $ et plus'},
+        {id: 2, name: '99€'},
         // Ajoute des prix
       ],
       products: [],
@@ -80,28 +74,52 @@ export default {
     };
   },
   methods: {
+    async deleteProduct(productId) {
+      // Logique pour supprimer le produit
+      console.log('Supprimer le produit avec l\'ID :', productId);
+      try {
+        const deleter = await fetch(`http://localhost/api/products/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
+          }
+        });
+        console.log("Produit supprimé");
+        window.location.reload();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     toggleMenu() {
       this.isMenuVisible = !this.isMenuVisible;
-      // Mettre à jour le texte du bouton burger manuellement
       this.burgerButtonText = this.isMenuVisible ? "Close menu" : "Open menu";
     },
     searchProducts() {
-      this.filteredProducts = this.products.filter((product) => {
+      this.filteredProducts = this.products.filter(product => {
         const matchesQuery = product.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-        const matchesCategory = this.selectedCategory === "" || product.category === this.selectedCategory;
-        const matchesPriceRange = this.selectedPriceRange === "" || product.price === this.selectedPriceRange;
+        const matchesCategory = this.selectedCategory === '' || product.category === this.selectedCategory;
+        const matchesPriceRange = this.selectedPriceRange === '' || product.price === this.selectedPriceRange;
 
         return matchesQuery && matchesCategory && matchesPriceRange;
       });
     },
-    login() {
-      // logique d'authentification ici
-      const isLoggedIn = true;
+    add() {
+      const isAddIn = true;
 
-      if (isLoggedIn) {
-        this.$router.push("/log");
+      if (isAddIn) {
+        this.$router.push('/admin/products/add');
       } else {
-        console.error("Login failed.");
+        console.error("Ajout échoué.");
+      }
+    },
+    edit(id) {
+      const isEditIn = true;
+
+      if (isEditIn) {
+        this.$router.push(`/admin/products/edit/${id}`);
+      } else {
+        console.error("Édition échouée.");
       }
     },
 
@@ -109,8 +127,7 @@ export default {
       try {
         const response = await fetch("http://localhost/api/products");
         const products = await response.json();
-        console.log(products);
-        this.products = products['hydra:member'];
+        this.products = products['hydra:member']; // Ligne corrigée
         // Affiche la liste complète dès le chargement
         this.filteredProducts = this.products;
       } catch (error) {
@@ -121,12 +138,8 @@ export default {
   mounted() {
     this.get_product_list();  // Appelle la méthode au montage du composant
   },
-};
+}
 </script>
-
-
-
-
 
 
 <style scoped>
@@ -135,19 +148,7 @@ export default {
   width: 95%;
   align-items: center;
 }
-
-.search-container{
-  display: flex;
-  align-items: flex-end;
-}
-
-.login-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.products-container {
+.users-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,104 +161,8 @@ export default {
   padding: 10px;
 }
 
-body {
-  margin: 0;
-  align-items: center;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  background-color: #181818;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-}
-
-.site-info {
-  display: flex;
-  align-items: center;
-}
-
-
-.login-container {
-  display: flex;
-  align-items: flex-end;
-}
-
-.users-section {
+.products-section {
   margin-top: 20px;
   align-items: center;
-}
-
-h2 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-  align-items: center;
-}
-
-.burger {
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 40px;
-  width: 80px;
-  padding: 40px;
-}
-
-.bar {
-  width: 50px;
-  height: 8px;
-  background-color: white;
-  transition: 0.3s;
-}
-
-.titre {
-  display: flex;
-  align-content: center;
-}
-
-.custom-button {
-  background-color: mediumseagreen;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.custom-button:hover {
-  background-color: darkgreen;
-}
-
-.custom-button:active {
-  background-color: forestgreen;
-}
-
-.custom-search-button {
-  background-color: dimgray;
-  color: white;
-  border: 1px;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.custom-search-button:hover {
-  background-color: darkslategrey;
-}
-
-.custom-search-button:active {
-  background-color: darkslategrey;
 }
 </style>

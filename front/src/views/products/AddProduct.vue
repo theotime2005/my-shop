@@ -13,7 +13,7 @@ export default {
       const isLeaveIn = true;
 
       if (isLeaveIn) {
-        router.push('/admin');
+        router.push('/admin/products');
       } else {
         console.error("Leave failed.");
       }
@@ -53,13 +53,14 @@ export default {
 
         if (response.ok) {
           console.log('Produit ajouté avec succès');
-          this.showFlashMessage("Product added", '/admin');
+          this.showFlashMessage("Product added", '/admin/products');
         } else {
           console.error('Échec de l\'ajout du produit');
           this.showFlashMessage("Failed to add!");
         }
       } catch (error) {
         console.error('Une erreur s\'est produite', error);
+        this.showFlashMessage("Failed to add!");
       }
     },
   },
@@ -69,16 +70,11 @@ export default {
 <template>
   <div class="content">
     <header>
-      <div class="titre">
-        <h1>THE POIRE</h1>
-      </div>
       <div class="leave-container">
         <button class="custom-button" @click="leave">Leave</button>
       </div>
     </header>
-
-
-      <h2>Ajouter un produit</h2>
+      <h2>Add a product</h2>
     <div class="product-add">
       <form @submit.prevent="addProduct">
 

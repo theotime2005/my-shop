@@ -11,7 +11,7 @@ export default {
     };
   },
   methods: {
-    displayFlash(message, reload) {
+    displayFlash(message, reload="") {
       this.message = message;
       this.isVisible = true;
 
