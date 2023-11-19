@@ -6,18 +6,18 @@
       </div>
     </header>
 
-    <section class="users-section">
-      <h2>users list</h2>
-      <div class="users-container">
-        <div class="user" v-for="user in userList" :key="user.id">
-          <h3>{{ user.fullName }}</h3>
-          <p>{{ user.email }}</p>
-          <div class="user-buttons">
-            <button class="edit-button" @click="edit(user.id)">Edit</button>
-            <button class="delete-button" @click="deleteUser(user.id)">Delete</button>
+    <section class="categories-section">
+      <h2>Categories list</h2>
+      <div class="categories-container">
+        <div class="category" v-for="category in categoryList" :key="category.id">
+          <h3>{{ category.name }}</h3>
+          <div class="category-buttons">
+            <button class="edit-button" @click="edit(category.id)">Edit</button>
+            <button class="delete-button" @click="deleteCategory(category.id)">Delete</button>
           </div>
-          <p>Identifier: {{ user.id }}</p>
+          <p>Identifier: {{ category.id }}</p>
         </div>
+        <div v-if="categoryList.length === 0">There are not categories.</div>
       </div>
     </section>
   </div>
@@ -27,21 +27,19 @@
 export default {
   data() {
     return {
-      userList: [],
+      categoryList: [],
     };
   },
   methods: {
-    async deleteUser(userId) {
-      // Logique pour supprimer le produit
-      console.log('Supprimer le produit avec l\'ID :', userId);
+    async deleteCategory(categoryId) {
       try {
-        const deleter = await fetch(`http://localhost/api/users/${userId}`, {
+        const deleter = await fetch(`http://localhost/api/categories/${categoryId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           }
         });
-        console.log("Utilisateur supprimé");
+        console.log("Catégorie supprimé");
         window.location.reload();
       } catch (error) {
         console.error(error);
@@ -51,7 +49,7 @@ export default {
       const isAddIn = true;
 
       if (isAddIn) {
-        this.$router.push('/admin/users/add');
+        this.$router.push('/admin/categories/add');
       } else {
         console.error("Ajout échoué.");
       }
@@ -60,29 +58,30 @@ export default {
       const isEditIn = true;
 
       if (isEditIn) {
-        this.$router.push(`/admin/users/edit/${id}`);
+        this.$router.push(`/admin/categories/edit/${id}`);
       } else {
         console.error("Édition échouée.");
       }
     },
 
-    async get_user_list() {
+    async get_category_list() {
       try {
-        const response = await fetch("http://localhost/api/users", {
+        const response = await fetch("http://localhost/api/categories", {
           method: 'GET',
           headers: {
             'authorization': `bearer ${sessionStorage.getItem("user_token")}`
           }
         });
-        const users = await response.json();
-        this.userList = users['hydra:member'];
+        const categories = await response.json();
+        console.log(categories);
+        this.categoryList = categories['hydra:member'];
       } catch (error) {
         console.error(error);
       }
     }
   },
   mounted() {
-    this.get_user_list();
+    this.get_category_list();
   },
 }
 </script>
@@ -106,7 +105,7 @@ export default {
   padding: 10px;
 }
 
-.users-section {
+.categories-section {
   margin-top: 20px;
   align-items: center;
 }

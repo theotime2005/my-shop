@@ -6,19 +6,12 @@
       </div>
     </header>
 
-    <h2>Edit a user « {{ this.username }} »</h2>
-    <div class="user-edit">
-      <form @submit.prevent="editUser">
+    <h2>Edit a category « {{ this.categoryName }} »</h2>
+    <div class="category-edit">
+      <form @submit.prevent="editCategory">
 
-        <label for="userName">User name</label>
-        <input class="custom-container-name" v-model="userName" type="text" id="userName" required>
-
-        <label for="userEmail">Email</label>
-        <input class="custom-container" v-model="userEmail" type="email" id="userEmail" required>
-
-        <label for="userPassword">Password</label>
-        <input class="custom-container" v-model="userPassword" type="password" id="userPassword" required>
-
+        <label for="categoryName">Category name</label>
+        <input class="custom-container-name" v-model="categoryName" type="text" id="categoryName" required>
         <button class="custom-button-add" type="submit">Edit</button>
       </form>
     </div>
@@ -37,7 +30,7 @@ export default {
       const isLeaveIn = true;
 
       if (isLeaveIn) {
-        router.push('/admin/users');
+        router.push('/admin/categories');
       } else {
         console.error("Leave failed.");
       }
@@ -47,54 +40,48 @@ export default {
   },
   data() {
     return {
-      username: '',
-      userEmail: '',
-      userPassword: '',
+      categoryName: ''
     };
   },
   methods: {
-    async getUserInformation(id) {
+    async getCategoryInformation(id) {
       try {
-        const putRequest = await fetch(`http://localhost/api/users/${id}`, {
+        const putRequest = await fetch(`http://localhost/api/categories/${id}`, {
           method: 'GET',
           headers: {
             'authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           },
         });
         const data = await putRequest.json();
-        this.userName = data.fullName;
-        this.userEmail = data.email;
-        this.userPassword = data.password;
+        this.categoryName = data.name;
       } catch (error) {
         console.error(error);
         this.leave();
       }
     },
 
-    async editUser() {
+    async editCategory() {
       try {
-        const newUser = {
-          fullName: this.userName,
-          email: this.userEmail,
-          password: this.userPassword
+        const newCategory = {
+          name: this.categoryName,
         };
 
         // Remplacez l'URL par l'API réelle
-        const requestUrl = `http://localhost/api/users/${this.$route.params.id}`;
+        const requestUrl = `http://localhost/api/categories/${this.$route.params.id}`;
         const response = await fetch(requestUrl, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           },
-          body: JSON.stringify(newUser),
+          body: JSON.stringify(newCategory),
         });
 
         if (response.ok) {
-          console.log('Utilisateur modifié avec succès');
-          router.push('/');
+          console.log('Catégorie modifiée avec succès');
+          router.push('/admin/categories');
         } else {
-          console.error('Échec de la modification du produit');
+          console.error('Échec de la modification de la catégorie');
         }
       } catch (error) {
         console.error('Une erreur s\'est produite', error);
@@ -102,12 +89,10 @@ export default {
     },
   },
   mounted() {
-    this.getUserInformation(this.$route.params.id);
+    this.getCategoryInformation(this.$route.params.id);
   },
 };
 </script>
-
-
 
 
 <style scoped>
@@ -236,7 +221,7 @@ header {
   border-radius: 5px;
 }
 
-.user-edit form {
+.category-edit form {
   display: flex;
   flex-direction: column;
   align-items: center;

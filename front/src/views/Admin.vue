@@ -2,6 +2,7 @@
   <div class="content">
     <nav>
       <router-link to="/admin/products"/>
+      <router-link to="/admin/categories"/>
       <router-link to="/admin/users"/>
     </nav>
     <div class="login-container">

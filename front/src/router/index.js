@@ -3,7 +3,9 @@ import HomeView from '@/views/HomeView.vue'
 import AdminView from '@/views/Admin.vue';
 import AddView from '@/views/products/AddProduct.vue';
 import EditView from '@/views/products/EditProduct.vue';
-
+import Categories from "@/components/Categories.vue";
+import AddCategory from "@/views/categories/AddCategory.vue";
+import EditCategory from "@/views/categories/EditCategory.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +58,24 @@ const router = createRouter({
           path: 'users/edit/:id',
           name: 'Edit a user',
           component: () => import("@/views/users/EditUser.vue"),
+          meta: {requiresAuth: true}
+        },
+        {
+          path: 'categories',
+          name: 'Categories',
+          component: Categories,
+          meta: {requiresAuth: true}
+        },
+        {
+          path: 'categories/add',
+          name: 'Add a category',
+          Component: AddCategory,
+          meta: {requiresAuth: true}
+        },
+        {
+          path: 'categories/edit/:id',
+          name: 'Edit a category',
+          component: EditCategory,
           meta: {requiresAuth: true}
         }
       ],

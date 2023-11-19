@@ -1,35 +1,11 @@
-<template>
-  <div class="content">
-    <header>
-      <div class="leave-container">
-        <button class="custom-button" @click="leave">Leave</button>
-      </div>
-    </header>
-
-    <h2>Edit a user « {{ this.username }} »</h2>
-    <div class="user-edit">
-      <form @submit.prevent="editUser">
-
-        <label for="userName">User name</label>
-        <input class="custom-container-name" v-model="userName" type="text" id="userName" required>
-
-        <label for="userEmail">Email</label>
-        <input class="custom-container" v-model="userEmail" type="email" id="userEmail" required>
-
-        <label for="userPassword">Password</label>
-        <input class="custom-container" v-model="userPassword" type="password" id="userPassword" required>
-
-        <button class="custom-button-add" type="submit">Edit</button>
-      </form>
-    </div>
-  </div>
-</template>
-
 <script>
 import { useRouter } from 'vue-router';
-import router from "@/router";
+import FlashMessage from "@/components/FlashMessage.vue";
 
 export default {
+  components: {
+    FlashMessage,
+  },
   setup() {
     const router = useRouter();
 
@@ -37,7 +13,7 @@ export default {
       const isLeaveIn = true;
 
       if (isLeaveIn) {
-        router.push('/admin/users');
+        router.push('/admin/categories');
       } else {
         console.error("Leave failed.");
       }
@@ -47,68 +23,63 @@ export default {
   },
   data() {
     return {
-      username: '',
-      userEmail: '',
-      userPassword: '',
+      categoryName: ''
     };
   },
   methods: {
-    async getUserInformation(id) {
-      try {
-        const putRequest = await fetch(`http://localhost/api/users/${id}`, {
-          method: 'GET',
-          headers: {
-            'authorization': `Bearer ${sessionStorage.getItem("user_token")}`
-          },
-        });
-        const data = await putRequest.json();
-        this.userName = data.fullName;
-        this.userEmail = data.email;
-        this.userPassword = data.password;
-      } catch (error) {
-        console.error(error);
-        this.leave();
-      }
+    showFlashMessage(message, reload) {
+      this.$refs.flashMessage.displayFlash(message, reload);
     },
-
-    async editUser() {
+    async addCategory() {
       try {
-        const newUser = {
-          fullName: this.userName,
-          email: this.userEmail,
-          password: this.userPassword
+        const newCategory = {
+          name: this.categoryName
         };
 
-        // Remplacez l'URL par l'API réelle
-        const requestUrl = `http://localhost/api/users/${this.$route.params.id}`;
-        const response = await fetch(requestUrl, {
-          method: 'PUT',
+        // remplace l'URL par l'API réelle
+        const response = await fetch('http://localhost/api/categories', {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${sessionStorage.getItem("user_token")}`
           },
-          body: JSON.stringify(newUser),
+          body: JSON.stringify(newCategory),
         });
 
         if (response.ok) {
-          console.log('Utilisateur modifié avec succès');
-          router.push('/');
+          console.log('Catégorie ajouté avec succès');
+          this.showFlashMessage("Category added", '/admin/categories');
         } else {
-          console.error('Échec de la modification du produit');
+          console.error('Échec de l\'ajout de la catégorie');
+          this.showFlashMessage("Failed to add!");
         }
       } catch (error) {
         console.error('Une erreur s\'est produite', error);
+        this.showFlashMessage("Failed to add!");
       }
     },
-  },
-  mounted() {
-    this.getUserInformation(this.$route.params.id);
   },
 };
 </script>
 
+<template>
+  <div class="content">
+    <header>
+      <div class="leave-container">
+        <button class="custom-button" @click="leave">Leave</button>
+      </div>
+    </header>
+      <h2>Add a category</h2>
+    <div class="category-add">
+      <form @submit.prevent="addCategory">
+        <input class="custom-container-name" v-model="categoryName" type="text" placeholder="Category name" id="categoryName" required>
 
-
+        <flash-message ref="flashMessage"></flash-message>
+        <button class="custom-button-add" type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 
@@ -144,7 +115,7 @@ export default {
 }
 
 .custom-button-add {
-  background-color: #ff8c00; /* Orange */
+  background-color: mediumseagreen;
   color: white;
   border: 1px;
   padding: 10px 20px;
@@ -158,11 +129,11 @@ export default {
 }
 
 .custom-button-add:hover {
-  background-color: #e07b00;
+  background-color: darkgreen;
 }
 
 .custom-button-add:active {
-  background-color: #e07b00;
+  background-color: forestgreen;
 }
 
 .leave-container {
@@ -225,7 +196,7 @@ header {
   background-color: darkslategrey;
 }
 
-.category-edit {
+.product-edit {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,7 +207,7 @@ header {
   border-radius: 5px;
 }
 
-.user-edit form {
+.user-add form {
   display: flex;
   flex-direction: column;
   align-items: center;
