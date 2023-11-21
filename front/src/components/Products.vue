@@ -35,7 +35,7 @@
         <div class="product" v-for="product in filteredProducts" :key="product.id">
           <h3>{{ product.name }}</h3>
           <p>{{ product.description }}</p>
-          <p>{{ product.price }}</p>
+          <p>{{ product.price }}€</p>
           <div class="product-buttons">
             <button class="edit-button" @click="edit(product.id)">Edit</button>
             <button class="delete-button" @click="deleteProduct(product.id)">Delete</button>
@@ -43,7 +43,7 @@
           <p>Identifier: {{ product.id }}</p>
         </div>
         <div v-if="filteredProducts.length === 0">No matching products found.</div>
-      </div>
+      M</div>
     </section>
   </div>
 </template>

@@ -30,9 +30,9 @@ Pour installer le projet, suivez ces étapes :
 # Fonctionnement
 
 Ce site a été conçu à l'aide du framework Vue.js, combiné avec une API
-reposant sur docker. Nous nous devons de signaler que cette API est male
+reposant sur docker. Nous nous devons de signaler que cette API est mal
 documentée et son fonctionnement très peut claires. Cependant, les
-fonctions suivante sont à l'heure implémentées :
+fonctions suivante sont à l'heure implémantées :
 
 -   Ajouter un produit : Permet d'ajouter un produit à la base. Nous
     n'avons pas utilisé les catégories, car celle-ci restent à ce jour
@@ -47,6 +47,6 @@ fonctions suivante sont à l'heure implémentées :
 
 > Actuellement, il est possible d'accéder à un panneau d'administration
 > via un bouton « log in », un email et un mot de passe. La gestion des
-> utilisateurs n'est pour le moment pas supportée depuis l'interface.
+> utilisateurs est possible de la même manière que les products. Cela s'applique également aux catégories.
 >
-> Date de révision : 17/11/2023
+> Date de révision : 19/11/2023
