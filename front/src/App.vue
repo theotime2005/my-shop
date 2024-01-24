@@ -5,7 +5,6 @@
   <hr>
   <footer class="footer">
     <p class="footer">© 2023 Théotime Berthod et Briac Dassier</p>
-    <p class="footer">Epitech Digital School Digi1, G1</p>
   </footer>
 </template>
 
@@ -24,6 +23,5 @@ import { RouterLink, RouterView } from 'vue-router'
   width: 100%;
   height: 100%;
   align-items: center;
-  padding: 15px;
 }
 </style>

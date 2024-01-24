@@ -11,7 +11,7 @@
       <form @submit.prevent="editProduct">
 
         <label for="productName">Product name</label>
-        <input class="custom-container-name" v-model="productName" type="text" id="productName">
+        <input class="custom-container" v-model="productName" type="text" id="productName">
 
         <label for="productDescription">Product description</label>
         <input class="custom-container" v-model="productDescription" type="text" id="productDescription" required>
@@ -20,6 +20,7 @@
         <input class="custom-container" v-model="productPrice" type="text" id="productPrice" required>
 
         <button class="custom-button-add" type="submit">Edit</button>
+
       </form>
     </div>
   </div>
@@ -74,7 +75,6 @@ export default {
           price: parseInt(this.productPrice),
         };
 
-        // Remplacez l'URL par l'API réelle
         const response = await fetch(`http://localhost/api/products/${this.$route.params.id}`, {
           method: 'PUT',
           headers: {
@@ -161,7 +161,9 @@ export default {
 
 .leave-container {
   display: flex;
-  align-items: flex-end;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-top: 10px;
 }
 
 header {
@@ -196,7 +198,7 @@ header {
   background-color: darkslategrey;
 }
 
-.custom-container-name {
+.custom-container {
   background-color: dimgray;
   color: white;
   border: 1px;
@@ -211,11 +213,11 @@ header {
   margin-top: 20px;
 }
 
-.custom-container-name:hover {
+.custom-container:hover {
   background-color: darkslategrey;
 }
 
-.custom-container-name:active {
+.custom-container:active {
   background-color: darkslategrey;
 }
 
@@ -235,8 +237,8 @@ header {
   flex-direction: column;
   align-items: center;
   background-color: lightgrey;
-  width: 300px;
-  height: 225px;
+  width: 350px;
+  height: auto;
   margin: auto;
   border-radius: 5px;
 }

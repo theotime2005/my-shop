@@ -43,7 +43,7 @@
           <p>Identifier: {{ product.id }}</p>
         </div>
         <div v-if="filteredProducts.length === 0">No matching products found.</div>
-      M</div>
+      </div>
     </section>
   </div>
 </template>

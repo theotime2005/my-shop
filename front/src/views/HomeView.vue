@@ -2,13 +2,13 @@
   <div class="content">
     <header>
       <div class="site-info">
-        <!-- Utilisation d'une propriété distincte 'burgerButtonText' -->
-        <div class="burger">
-          <button type="button" @click="toggleMenu">{{ burgerButtonText }}</button>
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
+        <div class="burger" @click="toggleMenu">
+          <button class="burger-button">{{ burgerButtonText }}</button>
+          <div class="burger-line line-1"></div>
+          <div class="burger-line line-2"></div>
+          <div class="burger-line line-3"></div>
         </div>
+
         <div class="titre">
           <h1>THE POIRE</h1>
         </div>
@@ -47,9 +47,10 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
 
+
+
+<script>
 export default {
   data() {
     return {
@@ -82,7 +83,6 @@ export default {
   methods: {
     toggleMenu() {
       this.isMenuVisible = !this.isMenuVisible;
-      // Mettre à jour le texte du bouton burger manuellement
       this.burgerButtonText = this.isMenuVisible ? "Close menu" : "Open menu";
     },
     searchProducts() {
@@ -123,9 +123,6 @@ export default {
   },
 };
 </script>
-
-
-
 
 
 
@@ -260,4 +257,39 @@ h2 {
 .custom-search-button:active {
   background-color: darkslategrey;
 }
+
+
+.burger-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.burger-line {
+  width: 75%;
+  height: 5px;
+  background-color: white;
+  transition: 0.3s ease;
+}
+
+.burger-button.active .line-1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.burger-button.active .line-2 {
+  opacity: 0;
+}
+
+.burger-button.active .line-3 {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+
 </style>

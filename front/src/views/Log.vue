@@ -6,7 +6,7 @@ export default {
   setup() {
     const email = ref('');
     const password = ref('');
-    const pAlert = ref(""); // Définir pAlert avec ref()
+    const pAlert = ref("");
 
     const router = useRouter();
 
@@ -90,7 +90,8 @@ h1 {
 }
 
 form {
-  margin-top: 20px;
+  margin-left: 500px;
+  margin-right: 500px;
 }
 
 label {
