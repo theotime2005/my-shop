@@ -111,7 +111,6 @@ export default {
         const products = await response.json();
         console.log(products);
         this.products = products['hydra:member'];
-        // Affiche la liste complète dès le chargement
         this.filteredProducts = this.products;
       } catch (error) {
         console.error(error);
@@ -119,7 +118,7 @@ export default {
     }
   },
   mounted() {
-    this.get_product_list();  // Appelle la méthode au montage du composant
+    this.get_product_list();
   },
 };
 </script>
